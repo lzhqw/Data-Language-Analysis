@@ -17,7 +17,7 @@ def load_data(data_path, test):
     print(data.columns)
     data = drop(data)
     data['summary_text'] = data['summary_text'].map(lambda x: '' if pd.isna(x) else x)
-    data = data.sample(frac=1, random_state=42, replace=False).reset_index(drop=True)
+    data = data.sample(frac=1, random_state=12, replace=False).reset_index(drop=True)
     if test:
         data = data[:1000]
     train_num = int(len(data) * 0.8)
@@ -121,24 +121,24 @@ def logistic_cls(Xtrain, Xtest, ytrain, ytest):
 if __name__ == '__main__':
     # ------------------------------------------ #
     # SETTINGS readscv
-    data_path = '../数据预处理/data.csv'
+    data_path = 'autodl-tmp/data.csv'
     encoding = 'utf-8-sig'
-    model_path = 'bert-small-japanese'
-    weight_path = 'model_weight'
+    model_path = 'autodl-tmp/bert-small-japanese'
+    weight_path = 'autodl-tmp/model_weight'
     pd.set_option('display.max_columns', None)
     pd.set_option('display.max_rows', 20)
     # ------------------------------------------ #
     # ------------------------------------------ #
     # SETTINGS HAN
-    epochs = 30
-    batch_size = 16
-    embed_size = 64
-    gru_hidden_size = 256
-    fc_hidden_size = 64
+    epochs = 70
+    batch_size = 256
+    embed_size = 16
+    gru_hidden_size = 16
+    fc_hidden_size = 16
     num_layers = 2
     lr = 1e-3
 
-    test = True
+    test = False
 
     device = torch.cuda.current_device()
     tokenizer = BertJapaneseTokenizer.from_pretrained(model_path)
@@ -170,7 +170,7 @@ if __name__ == '__main__':
             train_weight[i] = pos_weight
         else:
             train_weight[i] = neg_weight
-    sampler = WeightedRandomSampler(weights=train_weight, num_samples=80 * 2, replacement=False)
+    sampler = WeightedRandomSampler(weights=train_weight, num_samples=8000 * 2, replacement=False)
 
     model = MyModel(vocab_size=32768,
                     embed_size=embed_size,

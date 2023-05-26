@@ -6,8 +6,9 @@ import re
 from pymongo import MongoClient
 import numpy as np
 
-def connect(url,key):
-    proxyMeta = 'http://'+proxy['data']['list'][key]
+
+def connect(url, key):
+    proxyMeta = 'http://' + proxy['data']['list'][key]
     # proxyHost = proxy['data'][key]['ip']
     # proxyPort = proxy['data'][key]['port']
     # # 非账号密码验证
@@ -22,35 +23,37 @@ def connect(url,key):
         "https": proxyMeta
     }
     headers = {
-        'user-agent':'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/107.0.0.0 Safari/537.36 Edg/107.0.1418.56',
-        'cookie':'_gid=GA1.2.68241266.1670556064; UA-42337127-11=GA1.2.1859704258.1670556064; UA-42337127-11_gid=GA1.2.797236667.1670556064; _ts_yjad=1670556064827; _fbp=fb.1.1670556065045.1459711310; FPLC=DWQLhtzSjhkMptko48PDbxie7SK+Qjo5t0HwnEJHTfathh0bRbxsjl7ArUjCcPRXv22Hl/KIfkUwKASe2LtJpWPaJY80TdzaEbG/DT0rDbXNJ3P6swJWDkLLlnPeXA==; FPID=FPID2.2.G5anOU3h9zdySlqV6UrNlgv/0WtpsIVIuHleEomeFbg=.1670556064; FPAU=1.2.1656490350.1670556065; _gcl_au=1.1.928055942.1670556067; _tt_enable_cookie=1; _ttp=7yQEIZs68li9RoSbYHqi86Puqjf; _ga_YP1P8FF63J=GS1.1.1670574438.2.1.1670574440.0.0.0; cto_bundle=Oi_R-19XNDZieGpSNEoyRjc5ZU5ucGNUUmtLSk1MVXBmb2xCSnBPczUwaDQwWnhoaGxpaFRpNDdoQ3JvdVZXRnRDWFVoY3ZZbkV4bDZhckglMkZERU9FWVZkb1hITmVmRUVKdktLYUZnSGtEOW5hTDRLUzU4QTA5Wlk5VDNwUE9XamRnbCUyQkRuSHclMkJqdUt5ckZrMUklMkJ6dmVmdjgzZyUzRCUzRA; _ga=GA1.2.1859704258.1670556064; _ga_J9KZGB7P74=GS1.1.1670574438.2.1.1670574445.53.0.0; _ga_SFR1WSTL43=GS1.1.1670574438.2.1.1670574445.53.0.0; _td=7517fa25-9223-44ce-8a30-38a2c57d2f72',
+        'user-agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/107.0.0.0 Safari/537.36 Edg/107.0.1418.56',
+        'cookie': '_gid=GA1.2.68241266.1670556064; UA-42337127-11=GA1.2.1859704258.1670556064; UA-42337127-11_gid=GA1.2.797236667.1670556064; _ts_yjad=1670556064827; _fbp=fb.1.1670556065045.1459711310; FPLC=DWQLhtzSjhkMptko48PDbxie7SK+Qjo5t0HwnEJHTfathh0bRbxsjl7ArUjCcPRXv22Hl/KIfkUwKASe2LtJpWPaJY80TdzaEbG/DT0rDbXNJ3P6swJWDkLLlnPeXA==; FPID=FPID2.2.G5anOU3h9zdySlqV6UrNlgv/0WtpsIVIuHleEomeFbg=.1670556064; FPAU=1.2.1656490350.1670556065; _gcl_au=1.1.928055942.1670556067; _tt_enable_cookie=1; _ttp=7yQEIZs68li9RoSbYHqi86Puqjf; _ga_YP1P8FF63J=GS1.1.1670574438.2.1.1670574440.0.0.0; cto_bundle=Oi_R-19XNDZieGpSNEoyRjc5ZU5ucGNUUmtLSk1MVXBmb2xCSnBPczUwaDQwWnhoaGxpaFRpNDdoQ3JvdVZXRnRDWFVoY3ZZbkV4bDZhckglMkZERU9FWVZkb1hITmVmRUVKdktLYUZnSGtEOW5hTDRLUzU4QTA5Wlk5VDNwUE9XamRnbCUyQkRuSHclMkJqdUt5ckZrMUklMkJ6dmVmdjgzZyUzRCUzRA; _ga=GA1.2.1859704258.1670556064; _ga_J9KZGB7P74=GS1.1.1670574438.2.1.1670574445.53.0.0; _ga_SFR1WSTL43=GS1.1.1670574438.2.1.1670574445.53.0.0; _td=7517fa25-9223-44ce-8a30-38a2c57d2f72',
         'Connection': 'close'
     }
     # print(proxies)
-    response = requests.get(url,headers,proxies=proxies)
-    if response.status_code==200:
+    response = requests.get(url, headers, proxies=proxies)
+    if response.status_code == 200:
         return response
     else:
-        print(response.status_code,response.text)
+        print(response.status_code, response.text)
 
-def connect2(url,key):
-    proxyMeta = 'http://'+proxy['data']['list'][key]
+
+def connect2(url, key):
+    proxyMeta = 'http://' + proxy['data']['list'][key]
 
     proxies = {
         "http": proxyMeta,
         "https": proxyMeta
     }
     headers = {
-        'user-agent':'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/107.0.0.0 Safari/537.36 Edg/107.0.1418.56',
+        'user-agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/107.0.0.0 Safari/537.36 Edg/107.0.1418.56',
         'cookie': 'sb=tLsLYv0akVPt6ftavHV_xxUo; datr=tLsLYqwli-vz8LILfE3GabWt; c_user=100078298060296; xs=4:cv8QGEReNh0Kig:2:1644936264:-1:-1::AcW55HlhwCwc131Z1agk4TP1hUxRQdXx3fKFAFqHKQ; fr=0661H4Zno6AV0wEtB.AWUIBjXxd_mWbaCSmiw2p5hIiyg.BjThvu.Eo.AAA.0.0.BjThvu.AWXjq1Uvy7U; locale=zh_CN; dpr=1.149999976158142',
         'Connection': 'close'
     }
     # print(proxies)
-    response = requests.get(url,headers,proxies=proxies)
-    if response.status_code==200:
+    response = requests.get(url, headers, proxies=proxies)
+    if response.status_code == 200:
         return response
     else:
-        print(response.status_code,response.text)
+        print(response.status_code, response.text)
+
 
 def support_parse(data):
     data = data['threads']
@@ -62,15 +65,16 @@ def support_parse(data):
         comment_cnt = item['comment_cnt']
         fuzzy_time = item['fuzzy_time']
         message = (item['message'].encode('utf_8_sig')).decode('utf_8_sig')
-        comment_list.append({'thread_url_no_encode':thread_url_no_encode,
-                             'user_name':user_name,
-                             'heart_cnt':heart_cnt,
-                             'comment_cnt':comment_cnt,
-                             'fuzzy_time':fuzzy_time,
-                             'message':message})
+        comment_list.append({'thread_url_no_encode': thread_url_no_encode,
+                             'user_name': user_name,
+                             'heart_cnt': heart_cnt,
+                             'comment_cnt': comment_cnt,
+                             'fuzzy_time': fuzzy_time,
+                             'message': message})
     return comment_list
 
-def parse(Url,id_):
+
+def parse(Url, id_):
     # -------------------------------------------------- #
     # step 1. 获取facebook 点赞数
     # -------------------------------------------------- #
@@ -79,7 +83,7 @@ def parse(Url,id_):
         item_name)
 
     print(url_facebook)
-    response_facebook = connect2(url_facebook, np.random.randint(0,199))
+    response_facebook = connect2(url_facebook, np.random.randint(0, 199))
     # time.sleep(1)
     soup_facebook = BeautifulSoup(response_facebook.text, 'html.parser')
     thumb_ups = soup_facebook.select('button[type="submit"] > div > span')[2].text
@@ -92,12 +96,12 @@ def parse(Url,id_):
     url_comment = 'https://www.makuake.com/api/com/supporter/{}/{}/'.format(item_name, cnt)
     ccnt = 0
     while True:
-        ccnt+=1
+        ccnt += 1
         try:
-            response_comment = connect(url_comment, np.random.randint(0,199)).json()
+            response_comment = connect(url_comment, np.random.randint(0, 199)).json()
             break
         except Exception as e:
-            if ccnt>20: raise Exception(e)
+            if ccnt > 20: raise Exception(e)
         print(ccnt, end=',')
     # print(response_comment)
     # time.sleep(1)
@@ -109,13 +113,13 @@ def parse(Url,id_):
         url_comment = 'https://www.makuake.com/api/com/supporter/{}/{}/'.format(item_name, cnt)
         ccnt = 0
         while True:
-            ccnt+=1
+            ccnt += 1
             # time.sleep(0.5)
             try:
                 response_comment = connect(url_comment, np.random.randint(0, 199)).json()
                 break
             except Exception as e:
-                if ccnt > 50:raise Exception(e)
+                if ccnt > 50: raise Exception(e)
             print(ccnt, end=',')
         # print(response_comment)
         comment_list.extend(support_parse(response_comment))
@@ -129,12 +133,12 @@ def parse(Url,id_):
     activity_url = 'https://www.makuake.com/api/com/owner/{}/1/?draft=false'.format(item_name)
     cnt = 0
     while True:
-        cnt +=1
+        cnt += 1
         try:
-            response_activity = connect(activity_url,np.random.randint(0, 199)).json()
+            response_activity = connect(activity_url, np.random.randint(0, 199)).json()
             break
         except Exception as e:
-            if cnt>20: raise Exception(e)
+            if cnt > 20: raise Exception(e)
         print(cnt, end=',')
     # print(response_activity)
     print('\033[0;32m-- activity done ! --\033[0m')
@@ -144,12 +148,12 @@ def parse(Url,id_):
     url_investment = 'https://www.makuake.com/api/projects/{}/investment-info?_='.format(id_)
     cnt = 0
     while True:
-        cnt+=1
+        cnt += 1
         try:
             response_invest = connect(url_investment, np.random.randint(0, 199)).json()
             break
         except Exception as e:
-            if cnt>20: raise Exception(e)
+            if cnt > 20: raise Exception(e)
         print(cnt, end=',')
     # print(response_invest)
     current_amount = response_invest['collected_money']
@@ -163,14 +167,14 @@ def parse(Url,id_):
     print(Url)
     cnt = 0
     while True:
-        cnt+=1
+        cnt += 1
         try:
             response = connect(Url, np.random.randint(0, 199))
             break
         except Exception as e:
             if cnt > 20: raise Exception(e)
-        print(cnt,end=',')
-    soup = BeautifulSoup(response.text,'html.parser')
+        print(cnt, end=',')
+    soup = BeautifulSoup(response.text, 'html.parser')
     leftContent = soup.select('div#leftContent')[0]
     rightContent = soup.select('div#rightContent')[0]
     leftContentMain = soup.select('div#leftContentMain')[0]
@@ -202,7 +206,7 @@ def parse(Url,id_):
     try:
         anoinfo = rightContent.select('section > div.anoInfo > p')[0].get_text()
         try:
-            type_ = re.search('トは.+型',anoinfo).group()[2:-1]
+            type_ = re.search('トは.+型', anoinfo).group()[2:-1]
         except:
             type_ = anoinfo
     except:
@@ -222,18 +226,15 @@ def parse(Url,id_):
     # -------------------------------------------------- #
     choice_list = []
     buy_choice = soup.select('div#return > section')
-    for i,choice in enumerate(buy_choice):
+    for i, choice in enumerate(buy_choice):
         price = choice.select('h4.lefth4Right')[0].text
         choice_id = choice.select('a')[0].get('href').split('/')[-1]
         choice_describe = choice.select('a > p.detailTextRight')[0].text
         buy_num = projects_returns[i]['supported_amount']
         buy_left = projects_returns[i]['remain']
-        choice_list.append({'price': price, 'choice_describe':choice_describe,
+        choice_list.append({'price': price, 'choice_describe': choice_describe,
                             'buy_num': buy_num, 'buy_left': buy_left})
     print('\033[0;32m-- main done ! --\033[0m')
-
-
-
 
     return {
         'summary_text': summary_text,
@@ -256,15 +257,15 @@ def parse(Url,id_):
         'comment_list': comment_list
     }
 
+
 def save_MongoDB(project, data):
     project.pop('time_left_label')
-    new_data = {**project,**data}
+    new_data = {**project, **data}
     client = MongoClient(db_path)
     db = client[db_name]
     tb_detail = db[tb_detail_name]
     tb_detail.insert_one(new_data)
     print('\033[0;32msave to mongo suc\033[0m')
-
 
 
 if __name__ == '__main__':
@@ -280,12 +281,11 @@ if __name__ == '__main__':
     tb_base = db[tb_name]
     tb_detail = db[tb_detail_name]
 
-
     for project in tb_base.find():
         id_ = project['_id']
         url = project['url']
         # print(f'# --{id_}------------------------------------------')
-        if tb_detail.find_one({'_id':id_}) or id_ == 29560:
+        if tb_detail.find_one({'_id': id_}) or id_ == 29560:
             pass
             # print('已经爬取')
         else:
@@ -297,9 +297,9 @@ if __name__ == '__main__':
                 print(len(proxy['data']['list']))
                 # time.sleep(1)
                 data = parse(url, id_)
-                save_MongoDB(project,data)
+                save_MongoDB(project, data)
             except Exception as e:
-                print('\033[0;31m'+str(e)+'\033[0m')
+                print('\033[0;31m' + str(e) + '\033[0m')
             time.sleep(1)
     # url = 'https://www.makuake.com/project/nwojp6/'
     # response= connect(url)

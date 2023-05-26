@@ -10,7 +10,7 @@ import seaborn as sns
 import matplotlib.pyplot as plt
 from torch.utils.data import Dataset, DataLoader, WeightedRandomSampler
 from sklearn.preprocessing import StandardScaler
-from HAN import HierarchialAttentionNetwork, train
+from HAN import HierarchialAttentionNetwork, train, visualize_attention
 from transformers import BertJapaneseTokenizer
 from sklearn.linear_model import LogisticRegression, Lasso, LinearRegression
 from sklearn.metrics import accuracy_score, classification_report
@@ -64,7 +64,7 @@ def drop(data):
     # data = data.drop(data[data['img_num'] > 120].index)           # 150
     # data = data.drop(data[data['tag_num'] > 10].index)
     # add ---------------------------------------------------------- #
-    encoder = LabelEncoder()
+    # encoder = LabelEncoder()
     # data['category'] = encoder.fit_transform(data['category'])
     # data['location'] = encoder.fit_transform(data['location'])
     # data['type_'] = encoder.fit_transform(data['type_'])
@@ -134,7 +134,7 @@ def get_numeric(data):
     data = data.drop(labels=['id_', 'collected_money', 'collected_supporter', 'percent',
                              'title', 'summary_text', 'main_text', 'thumb_ups', 'is_end', 'remain_time',
                              'condition', 'curr_time', 'end_at', 'comment_num', 'is_store_opening', 'is_new',
-                            'is_new_store_opening'], axis=1)
+                             'is_new_store_opening'], axis=1)
     for column in ['target_amount', 'activity_num', 'min_price', 'max_price', 'avg_price']:
         data[column] = data[column].map(lambda x: np.log(x + 1))
 
@@ -175,6 +175,7 @@ def plot_train_val_loss_acc(history):
     plt.plot(range(0, len(train_history), 1), test_history[:, 1])
     plt.savefig('loss_acc.png')
 
+
 def logistic_cls(Xtrain, Xtest, ytrain, ytest):
     lg = LogisticRegression()
     lg.fit(Xtrain, ytrain)
@@ -184,6 +185,7 @@ def logistic_cls(Xtrain, Xtest, ytrain, ytest):
     predict = lg.predict(Xtest)
     print(accuracy_score(ytest, predict))
     print(classification_report(ytest, predict))
+
 
 def lasso_rg(Xtrain, Xtest, ytrain, ytest):
     # lasso = Lasso(alpha=0)
@@ -206,13 +208,45 @@ def lasso_rg(Xtrain, Xtest, ytrain, ytest):
     print(accuracy_score(ytest, predict))
     print(classification_report(ytest, predict))
 
+
+def test_and_plot_model():
+    model.load_state_dict(torch.load('model_weight/eopch_15_loss_0.3454_acc0.8600278551532033.pth'))
+
+    model.eval()
+    true = 0
+    cnt = 0
+    for batch in tqdm(test_loader):
+        documents, sentences_per_document, words_per_sentence, numeric, y = [x.to(device) for x in batch]
+        with torch.no_grad():
+            scores, word_alphas, sentence_alphas = model(documents, sentences_per_document, words_per_sentence, numeric)
+        for j in range(documents.shape[0]):
+            doc = []
+            for i in range(documents[j].shape[0]):
+                sentence = [i for i in tokenizer.decode(documents[j, i, :]).split() if i != '[PAD]']
+                if len(sentence) == 0:
+                    break
+                doc.append(sentence)
+            if scores[j].item() > 0.8 or scores[j].item() < 0.2:
+                cnt += 1
+                if scores[j].item() > 0.8 and y[j] == 1:
+                    true += 1
+                elif scores[j].item() < 0.2 and y[j] == 0:
+                    true += 1
+            if cnt < 100:
+                visualize_attention(doc=doc, scores=scores[j], word_alphas=word_alphas[j],
+                                    sentence_alphas=sentence_alphas[j], words_in_each_sentence=words_per_sentence[j],
+                                    y=ytest[j])
+            print(ytest[j], Xtest.loc[j, 'percent'])
+    print(true / cnt)
+
+
 if __name__ == '__main__':
     # ------------------------------------------ #
     # SETTINGS readscv
-    data_path = 'autodl-tmp/data.csv'
+    data_path = '../数据预处理/data.csv'
     encoding = 'utf-8-sig'
-    model_path = 'autodl-tmp/bert-small-japanese'
-    weight_path = 'autodl-tmp/model_weight'
+    model_path = 'bert-small-japanese'
+    weight_path = 'model_weight'
     pd.set_option('display.max_columns', None)
     pd.set_option('display.max_rows', 20)
     # ------------------------------------------ #
@@ -254,7 +288,7 @@ if __name__ == '__main__':
 
     logistic_cls(numeric_train, numeric_test, ytrain, ytest)
     # lasso_rg(numeric_train, numeric_test, ytrain, ytest)
-    
+
     train_dataset = dataset(Xtrain, numeric_train, ytrain)
     test_dataset = dataset(Xtest, numeric_test, ytest)
 
@@ -265,15 +299,15 @@ if __name__ == '__main__':
     pos_num = np.sum(ytrain)
     # pos_weight = pos_num/len(ytrain)
     # neg_weight = (len(ytrain)-pos_num)/len(ytrain)
-    pos_weight = 1/pos_num
-    neg_weight = 1/(len(ytrain)-pos_num)
+    pos_weight = 1 / pos_num
+    neg_weight = 1 / (len(ytrain) - pos_num)
     train_weight = np.zeros(len(ytrain))
     for i in range(len(ytrain)):
         if ytrain[i] == 1:
             train_weight[i] = pos_weight
         else:
             train_weight[i] = neg_weight
-    sampler = WeightedRandomSampler(weights=train_weight, num_samples=8000*2, replacement=False)
+    sampler = WeightedRandomSampler(weights=train_weight, num_samples=8000 * 2, replacement=False)
 
     model = HierarchialAttentionNetwork(vocab_size=32768,
                                         emb_size=embed_size,
@@ -292,6 +326,8 @@ if __name__ == '__main__':
 
     model = model.to(device)
     criterion = criterion.to(device)
+
+    # test_and_plot_model()
 
     history = train(net=model,
                     train_loader_params={'dataset': train_dataset, 'batch_size': batch_size, 'sampler': sampler},

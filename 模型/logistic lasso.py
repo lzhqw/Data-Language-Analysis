@@ -85,7 +85,7 @@ def logistic_cls(Xtrain, Xtest, ytrain, ytest):
     predict = lg.predict(Xtest)
     print(accuracy_score(ytest, predict))
     print(classification_report(ytest, predict))
-    plot_heat(lg.coef_, 21, 'rg.pdf')
+    plot_heat(lg.coef_, 21, 'img/rg.pdf')
 
 
 def plot_lasso(Xtrain, ytrain):
@@ -115,14 +115,14 @@ def plot_lasso(Xtrain, ytrain):
             plt.plot(crange, coefs[:, i])
         plt.xlabel('lambda')
         plt.ylabel('coef')
-        plt.savefig('解的路径.pdf', dpi=300)
+        plt.savefig('img/解的路径.pdf', dpi=300)
         plt.close()
         plt.figure()
         # plt.show()
         plt.plot(crange, accs)
         plt.xlabel('lambda')
         plt.ylabel('acc')
-        plt.savefig('lasoo_acc.pdf', dpi=300)
+        plt.savefig('img/lasoo_acc.pdf', dpi=300)
         # plt.show()
 
 

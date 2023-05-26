@@ -173,7 +173,7 @@ def plot_train_val_loss_acc(history):
     ax2 = plt.subplot(1, 2, 2)
     plt.plot(range(len(train_history)), train_history[:, 1])
     plt.plot(range(0, len(train_history), 1), test_history[:, 1])
-    plt.savefig('loss_acc.png')
+    plt.savefig('img/loss_acc.png')
 
 
 def logistic_cls(Xtrain, Xtest, ytrain, ytest):
@@ -210,7 +210,7 @@ def lasso_rg(Xtrain, Xtest, ytrain, ytest):
 
 
 def test_and_plot_model():
-    model.load_state_dict(torch.load('model_weight/eopch_15_loss_0.3454_acc0.8600278551532033.pth'))
+    model.load_state_dict(torch.load('model_weight/[HAN]eopch_15_loss_0.3454_acc0.8600278551532033.pth'))
 
     model.eval()
     true = 0

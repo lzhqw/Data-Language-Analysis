@@ -263,7 +263,7 @@ if __name__ == '__main__':
                                         word_att_size=word_att_size,
                                         sentence_att_size=sentence_att_size,
                                         dropout=dropout)
-    model.load_state_dict(torch.load('HAN 多分类/eopch_53_loss_0.9744_acc0.767449956483899.pth'))
+    model.load_state_dict(torch.load('model_weight/[HAN_multi]eopch_53_loss_0.9744_acc0.767449956483899.pth'))
     model = model.to(device)
     draw_attention_fig(model, test_loader, device)
 

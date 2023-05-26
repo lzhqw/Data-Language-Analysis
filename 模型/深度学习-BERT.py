@@ -12,6 +12,7 @@ from BERT import BertCls, train
 from sklearn.linear_model import LogisticRegression, Lasso, LinearRegression
 from sklearn.metrics import accuracy_score, classification_report
 
+
 def drop(data):
     print(f'drop前 数据集数量{len(data)}')
     data = data.drop(data[data['duration'] < 0].index)
@@ -88,7 +89,7 @@ def get_text(data):
     #         if len(tokens['input_ids']) < 100:
     #             word_per_sentence.append(len(tokens['input_ids']))
     # sns.kdeplot(x=word_per_sentence, fill=True)
-    # plt.savefig('word_per_sentence.pdf', dpi=300)
+    # plt.savefig('img/word_per_sentence.pdf', dpi=300)
 
 
 def get_numeric(data):
@@ -101,7 +102,7 @@ def get_numeric(data):
     data = data.drop(labels=['id_', 'collected_money', 'collected_supporter', 'percent',
                              'title', 'summary_text', 'main_text', 'thumb_ups', 'is_end', 'remain_time',
                              'condition', 'curr_time', 'end_at', 'comment_num', 'is_store_opening', 'is_new',
-                            'is_new_store_opening'], axis=1)
+                             'is_new_store_opening'], axis=1)
     for column in ['target_amount', 'activity_num', 'min_price', 'max_price', 'avg_price']:
         data[column] = data[column].map(lambda x: np.log(x + 1))
 
@@ -129,14 +130,15 @@ def plot_train_val_loss_acc(history):
     test_history = [(i[0], i[1]) for i in test_history]
     train_history = np.array(train_history)
     test_history = np.array(test_history)
-    ax1 = plt.subplot(1,2,1)
+    ax1 = plt.subplot(1, 2, 1)
     plt.plot(range(len(train_history)), train_history[:, 0])
-    plt.plot(range(0, len(train_history), 5), test_history[:,0])
+    plt.plot(range(0, len(train_history), 5), test_history[:, 0])
 
-    ax2 = plt.subplot(1,2,2)
-    plt.plot(range(len(train_history)), train_history[:,1])
-    plt.plot(range(0, len(train_history), 5), test_history[:,1])
-    plt.savefig('loss_acc.png')
+    ax2 = plt.subplot(1, 2, 2)
+    plt.plot(range(len(train_history)), train_history[:, 1])
+    plt.plot(range(0, len(train_history), 5), test_history[:, 1])
+    plt.savefig('img/loss_acc.png')
+
 
 def logistic_cls(Xtrain, Xtest, ytrain, ytest):
     lg = LogisticRegression()
@@ -147,16 +149,17 @@ def logistic_cls(Xtrain, Xtest, ytrain, ytest):
     predict = lg.predict(Xtest)
     print(accuracy_score(ytest, predict))
     print(classification_report(ytest, predict))
-    
+
+
 if __name__ == '__main__':
     # SETTINGS -------------------------------- #
-    model_path = "autodl-tmp/bert-small-japanese"
-    data_path = "autodl-tmp/data.csv"
-    weight_path = "autodl-tmp/model_weight"
-    logpath = "autodl-tmp/"
+    model_path = "./bert-small-japanese"
+    data_path = "../数据预处理/data.csv"
+    weight_path = "./model_weight"
+    logpath = ""
     encoding = 'utf-8-sig'
     device = torch.cuda.current_device()
-    test = False
+    test = True
     # ----------------------------------------- #
     # SETTINGS -------------------------------- #
     word_per_sentence = 50
@@ -171,20 +174,18 @@ if __name__ == '__main__':
 
     Xtrain, Xtest, ytrain, ytest = load_data(data_path, test=test)
 
-
-
     numeric_train = get_numeric(Xtrain)
     scaler = StandardScaler()
     numeric_train = scaler.fit_transform(numeric_train)
 
     numeric_test = get_numeric(Xtest)
     numeric_test = scaler.transform(numeric_test)
-    
+
     logistic_cls(numeric_train, numeric_test, ytrain, ytest)
-    
+
     text_train = get_text(Xtrain)
     text_test = get_text(Xtest)
-    
+
     train_dataset = get_dataset(text_train, numeric_train, ytrain)
     test_dataset = get_dataset(text_test, numeric_test, ytest)
 
@@ -201,7 +202,7 @@ if __name__ == '__main__':
                     device=device,
                     weight_path=weight_path,
                     logpath=logpath
-                   )
+                    )
 
     plot_train_val_loss_acc(history)
 

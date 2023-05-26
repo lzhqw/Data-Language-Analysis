@@ -6,3 +6,5 @@ https://github.com/sgrvinod/a-PyTorch-Tutorial-to-Text-Classification
 bert-japanese-small 来自
 
 https://huggingface.co/izumi-lab/bert-small-japanese
+
+data.csv未上传
